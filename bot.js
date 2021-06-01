@@ -4,6 +4,10 @@ const config = new require("./config.json");
 const prefix = config.prefix;
 const fs = require("fs");
 
+// Basic Log Hosting
+const express = require("express");
+const app = express();
+
 let mainGuild;
 let feedbackChannel;
 let debugmode = false;
@@ -112,8 +116,12 @@ function sendFeedback(msg, answer) {
     .setTimestamp()
     .setColor("PURPLE")
 
-    feedbackChannel.send(feedbackEmbed);
-
+    feedbackChannel.send(feedbackEmbed)
+    .catch((err) => {
+      console.log(err);
+      return
+    })
+    
     logFeedback(msg, answer)
 }
 
@@ -126,3 +134,12 @@ function logFeedback(msg, answer){
 }
 
 client.login(process.env.TOKEN);
+
+
+app.get("/logs", (request, response) => {
+  response.sendFile(__dirname + "/feedback.log");
+});
+
+const listener = app.listen(process.env.PORT, () => {
+  console.log("Your app is listening on port " + listener.address().port);
+});
