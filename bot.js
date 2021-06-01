@@ -29,11 +29,10 @@ function debugLog(msg, text) {
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user
-  .setActivity(`DM ${prefix}NewFeedback`, { type: "PLAYING" })
+  client.user.setActivity(`DM ${prefix}NewFeedback`, { type: "PLAYING" })
   .then(presence =>
     console.log(
-      `Activity set to ${presence.game ? presence.game.name : "none"}`
+      `Activity set to ${presence.activities[0].type ? presence.activities[0].name : "none"}`
     )
   )
   .catch(console.error);
@@ -125,4 +124,4 @@ function logFeedback(msg, answer){
     return logMessage;
 }
 
-client.login(config.token);
+client.login(process.env.TOKEN);

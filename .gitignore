@@ -82,5 +82,5 @@ web_modules/
 .next
 
 #configuration file
-config.json
+# config.json
 settings/
