@@ -8,8 +8,11 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node bot.js",
+    "start": "node bot.js debug",
     "test": "nodemon bot.js debug"
+  },
+  "engines": {
+    "node": "14.x"
   },
   "author": "Serabus",
   "license": "ISC"
