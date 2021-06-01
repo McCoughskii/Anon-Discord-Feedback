@@ -1,0 +1,15 @@
+{
+  "name": "anon-discord-feedback",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "nodemon bot.js debug"
+  },
+  "author": "Serabus",
+  "license": "ISC"
+}
