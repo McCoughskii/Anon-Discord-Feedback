@@ -1,9 +1,16 @@
+// This will check if the node version you are running is the required
+// Node version, if it isn't it will throw the following error to inform you.
+if (Number(process.version.slice(1).split(".")[0]) < 12) throw new Error("Node 12.0.0 or higher is required. Update Node on your system.");
+
+
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = new require("./config.json");
 const prefix = config.prefix;
 const fs = require("fs");
 const TOKEN = process.env.TOKEN || config.TOKEN;
+
+client.logger = require("./modules/logger.js");
 
 // Basic Log Hosting
 const express = require("express");
@@ -14,34 +21,32 @@ let feedbackChannel;
 let debugmode = false;
 
 let feedbackEmbed = new Discord.MessageEmbed()
-    .setColor("PURPLE")
-    .setTitle("New Anonymous Feedback");
+  .setColor("PURPLE")
+  .setTitle("New Anonymous Feedback");
 
 function startup(client) {
   mainGuild = client.guilds.cache.get(config.guildid);
   feedbackChannel = mainGuild.channels.cache.get(config.feedbackchannel);
   if (process.argv[2] === "debug") {
-    console.log("Debug Mode Enabled");
+    client.logger.log(`Debug Mode Enabled`, "debug");
     debugmode = true;
   }
 }
 
 function debugLog(msg, text) {
-    if (debugmode) {
-        console.log(text);
-    }
+  if (debugmode) {
+    client.logger.log(text, "debug");
+  }
 }
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  client.logger.log(`${client.user.tag}, ready to serve ${client.users.cache.size} users in ${client.guilds.cache.size} servers.`, "ready");
   client.user
-  .setActivity(`DM ${prefix}NewFeedback`, { type: "PLAYING" })
-  .then(presence =>
-    console.log(
-        `Activity set to ${presence.activities[0].type ? presence.activities[0].name : "none"}`
+    .setActivity(`DM ${prefix}NewFeedback`, { type: "PLAYING" })
+    .then(presence =>
+      client.logger.log(`Activity set to ${presence.activities[0].type ? presence.activities[0].name : "none"}`, "log")
     )
-  )
-  .catch(console.error);
+    .catch(console.error);
   startup(client);
 });
 
@@ -73,8 +78,8 @@ client.on("message", (msg) => {
   }
 
   // Admin only Commands
-//   if (msg.author.id !== config.adminid || msg.author.id !== config.ownerid)
-//     return;
+  //   if (msg.author.id !== config.adminid || msg.author.id !== config.ownerid)
+  //     return;
 
   // Owner only Commands
 });
@@ -112,26 +117,28 @@ async function askFeedback(msg) {
 
 function sendFeedback(msg, answer) {
 
-    feedbackEmbed
+  feedbackEmbed
     .setDescription(answer)
     .setTimestamp()
     .setColor("PURPLE")
 
-    feedbackChannel.send(feedbackEmbed)
+  feedbackChannel.send(feedbackEmbed)
     .catch((err) => {
-      console.log(err);
+      client.logger.log(err, "error");
       return
     })
-    
-    logFeedback(msg, answer)
+
+  logFeedback(msg, answer)
 }
 
-function logFeedback(msg, answer){
-    let logMessage = `${msg.author.tag} | ${msg.author.id}: ${answer} \n` 
-    fs.appendFileSync("feedback.log", logMessage, function (err) {
-        if (err) throw err;
-    })
-    return logMessage;
+function logFeedback(msg, answer) {
+  let logMessage = `${msg.author.tag} | ${msg.author.id}: ${answer} \n`
+  fs.appendFileSync("feedback.log", logMessage, function (err) {
+    if (err)
+      client.logger.log(err, "error");
+    throw err;
+  })
+  return logMessage;
 }
 
 client.login(TOKEN);
@@ -142,5 +149,5 @@ app.get("/logs", (request, response) => {
 });
 
 const listener = app.listen(process.env.PORT, () => {
-  console.log("Your app is listening on port " + listener.address().port);
+  client.logger.log(`Your app is listening on port ${listener.address().port}`, "log");
 });
