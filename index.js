@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const config = new require("./config.json");
 const prefix = config.prefix;
 const fs = require("fs");
+const TOKEN = process.env.TOKEN || config.TOKEN;
 
 // Basic Log Hosting
 const express = require("express");
@@ -133,7 +134,7 @@ function logFeedback(msg, answer){
     return logMessage;
 }
 
-client.login(process.env.TOKEN);
+client.login(TOKEN);
 
 
 app.get("/logs", (request, response) => {

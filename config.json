@@ -2,7 +2,8 @@
     "adminid": "257275862406266882",
     "prefix": "-",
     "ownerid": "114091125479833609",
-    "feedbackquestion": "What is your feedback",
+    "feedbackquestion": "What is your feedback?",
     "feedbackchannel": "849087252331495425",
-    "guildid": "755798241806778488"
+    "guildid": "755798241806778488",
+    "TOKEN": ""
 }
